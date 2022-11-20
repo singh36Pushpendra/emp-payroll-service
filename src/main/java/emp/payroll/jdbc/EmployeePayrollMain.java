@@ -6,9 +6,8 @@ public class EmployeePayrollMain {
     public static void main(String[] args) {
         final String SELECT_QUERY = "SELECT * FROM employee_payroll;";
         System.out.println("Welcome to JDBC for Employee Payroll!");
-        try (Connection connection = DriverManager.getConnection("jdbc:mysql://localhost:3306/payroll_service", "root", "root")) {
-            System.out.println("Connection established successfully!");
-            Statement statement = connection.createStatement();
+        try {
+            Statement statement = UseJdbc.useStatement();
             ResultSet resultSet = statement.executeQuery(SELECT_QUERY);
 
             while (resultSet.next()) {
@@ -28,7 +27,13 @@ public class EmployeePayrollMain {
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);
+        } finally {
+            try {
+                UseJdbc.useConnection().close();
+                System.out.println("Connection closed!");
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 }
-
